@@ -1,6 +1,4 @@
 <center><font size = 6>Android 开发 · BMI计算器
-
-
 <center>22920182204218
 
 <center>李晓旭</center>
@@ -347,26 +345,25 @@ public void run() {
 ​		同上文，主要是创建线程和get请求。同时获取各输入信息后需要判断是否为空。
 
 ~~~java
- public void submmit(View view) {
+    public void submmit(View view) {
         RE.scrollToPosition(0);
         int k = 0;
+
+        EditText weightHereStr = (EditText) findViewById(R.id.weight);
+        EditText heightHereStr = (EditText) findViewById(R.id.height);
+        String weightHere = weightHereStr.getText().toString();
+        String heightHere = heightHereStr.getText().toString();
+        float weight = Float.parseFloat(weightHere);
+        float height = Float.parseFloat(heightHere);
+        SimpleDateFormat formatter = new SimpleDateFormat("  yyyy.MM.dd");
         new Thread(new Runnable() {
             @Override
             public void run() {
-                EditText weightHereStr = (EditText) findViewById(R.id.weight);
-                EditText heightHereStr = (EditText) findViewById(R.id.height);
-                String weightHere = weightHereStr.getText().toString();
-                String heightHere = heightHereStr.getText().toString();
-                System.out.println(weightHere);
-                if(!weightHere.isEmpty() && !heightHere.isEmpty()) {
-                    float weight = Float.parseFloat(weightHere);
-                    float height = Float.parseFloat(heightHere);
-                    SimpleDateFormat formatter = new SimpleDateFormat("  yyyy.MM.dd");
+                if (!weightHere.isEmpty() && !heightHere.isEmpty() && flag == false) {
                     try {
-                        String uu = "添加记录：" + weightHere + "kg ," 																				+ heightHere + "m 成功。";
-                        System.out.println(uu);
-                        URL reqUrl = new URL("https://southstem.cloud/addNewBmi?height=" 												+ heightHere + "&weight=" + weightHere);
-                        HttpURLConnection connection2 = (HttpURLConnection) 																			reqUrl.openConnection();
+                        String uu = "添加记录：" + weightHere + "kg ," + heightHere + "m 成功。";
+                        URL reqUrl = new URL("https://southstem.cloud/addNewBmi?height=" + heightHere + "&weight=" + weightHere);
+                        HttpURLConnection connection2 = (HttpURLConnection) reqUrl.openConnection();
                         connection2.setRequestMethod("GET");
                         connection2.setConnectTimeout(5000);
                         connection2.setReadTimeout(8000);
@@ -383,22 +380,17 @@ public void run() {
                     } catch (IOException ioException) {
                         ioException.printStackTrace();
                     }
-                    Date curDate = new Date(System.currentTimeMillis());
-                    String timeHere = formatter.format(curDate);
-                    item itemNew = new item(height, weight, timeHere);
-                    adapter.newItem(itemNew);
-                }
-                else{
+                   // adapter.notifyDataSetChanged();
+                } else {
                     resultStr = "ERROR";
                 }
                 flag = true;
             }
         }).start();
-        while(!flag) ;
-        Toast toast = Toast.makeText(getApplicationContext(),																					 resultStr, Toast.LENGTH_LONG);
-        toast.show();
-        flag = false;
-        resultStr = "";
+        Date curDate = new Date(System.currentTimeMillis());
+        String timeHere = formatter.format(curDate);
+        item itemNew = new item(height, weight, timeHere);
+        adapter.newItem(itemNew);
     }
 ~~~
 
@@ -427,7 +419,11 @@ public void run() {
 
 
 
-​		可见最上方出现我们需要的结果，测试完成。
+​		可见最上方出现我们需要的结果。查看服务器断json数据，已经成功添加，测试完成。
+
+![](14.jpg)
+
+​		 源码：	[GitHub ：Southstem/ BMICalculator](https://github.com/Southstem/BMICalculator)
 
 ## 四、总结
 

@@ -95,21 +95,20 @@ public class MainActivity extends AppCompatActivity {
     public void submmit(View view) {
         RE.scrollToPosition(0);
         int k = 0;
+
+        EditText weightHereStr = (EditText) findViewById(R.id.weight);
+        EditText heightHereStr = (EditText) findViewById(R.id.height);
+        String weightHere = weightHereStr.getText().toString();
+        String heightHere = heightHereStr.getText().toString();
+        float weight = Float.parseFloat(weightHere);
+        float height = Float.parseFloat(heightHere);
+        SimpleDateFormat formatter = new SimpleDateFormat("  yyyy.MM.dd");
         new Thread(new Runnable() {
             @Override
             public void run() {
-                EditText weightHereStr = (EditText) findViewById(R.id.weight);
-                EditText heightHereStr = (EditText) findViewById(R.id.height);
-                String weightHere = weightHereStr.getText().toString();
-                String heightHere = heightHereStr.getText().toString();
-                System.out.println(weightHere);
-                if(!weightHere.isEmpty() && !heightHere.isEmpty()) {
-                    float weight = Float.parseFloat(weightHere);
-                    float height = Float.parseFloat(heightHere);
-                    SimpleDateFormat formatter = new SimpleDateFormat("  yyyy.MM.dd");
+                if (!weightHere.isEmpty() && !heightHere.isEmpty() && flag == false) {
                     try {
                         String uu = "添加记录：" + weightHere + "kg ," + heightHere + "m 成功。";
-                        System.out.println(uu);
                         URL reqUrl = new URL("https://southstem.cloud/addNewBmi?height=" + heightHere + "&weight=" + weightHere);
                         HttpURLConnection connection2 = (HttpURLConnection) reqUrl.openConnection();
                         connection2.setRequestMethod("GET");
@@ -128,22 +127,17 @@ public class MainActivity extends AppCompatActivity {
                     } catch (IOException ioException) {
                         ioException.printStackTrace();
                     }
-                    Date curDate = new Date(System.currentTimeMillis());
-                    String timeHere = formatter.format(curDate);
-                    item itemNew = new item(height, weight, timeHere);
-                    adapter.newItem(itemNew);
-                }
-                else{
+                   // adapter.notifyDataSetChanged();
+                } else {
                     resultStr = "ERROR";
                 }
                 flag = true;
             }
         }).start();
-        while(!flag) ;
-        Toast toast = Toast.makeText(getApplicationContext(), resultStr, Toast.LENGTH_LONG);
-        toast.show();
-        flag = false;
-        resultStr = "";
+        Date curDate = new Date(System.currentTimeMillis());
+        String timeHere = formatter.format(curDate);
+        item itemNew = new item(height, weight, timeHere);
+        adapter.newItem(itemNew);
     }
 }
 
