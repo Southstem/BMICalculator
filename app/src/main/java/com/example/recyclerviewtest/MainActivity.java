@@ -29,7 +29,6 @@ public class MainActivity extends AppCompatActivity {
     public RecyclerView RE;
     public recyclerViewAdapter adapter;
     public item[] items;
-    public boolean flag = false;
     public String resultStr = "";
     public int maxNumb = 40;
 
@@ -106,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                if (!weightHere.isEmpty() && !heightHere.isEmpty() && flag == false) {
+                if (!weightHere.isEmpty() && !heightHere.isEmpty() ) {
                     try {
                         String uu = "添加记录：" + weightHere + "kg ," + heightHere + "m 成功。";
                         URL reqUrl = new URL("https://southstem.cloud/addNewBmi?height=" + heightHere + "&weight=" + weightHere);
@@ -131,12 +130,12 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     resultStr = "ERROR";
                 }
-                flag = true;
             }
         }).start();
         Date curDate = new Date(System.currentTimeMillis());
         String timeHere = formatter.format(curDate);
         item itemNew = new item(height, weight, timeHere);
+        System.out.println(resultStr);
         adapter.newItem(itemNew);
     }
 }
